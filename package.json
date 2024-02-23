@@ -9,7 +9,9 @@
   "files": [
     "dist",
     "class-validator/dist",
+    "class-validator/package.json",
     "class-transformer/dist",
+    "class-transformer/package.json",
     "types"
   ],
   "exports": {
