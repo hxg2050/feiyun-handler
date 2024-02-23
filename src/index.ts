@@ -141,14 +141,8 @@ export const include = async (baseDir: string, rule = '**/*.handler.ts') => {
 
     for (let i = 0; i < handlerPaths.length; i++) {
         const handler = await import(handlerPaths[i]);
-        console.log(handler);
-
-        for (let handle in handler) {
-            if (handle === 'default') {
-                for (let hand in handler[handle]) {
-                    handlers.push(handler[handle][hand]);
-                }
-            }
+        if (handler.default) {
+            handlers.push(handler.default);
         }
     }
 
