@@ -4,7 +4,7 @@ import path from "node:path";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 
-import type { FeiyunMiddleware } from 'feiyun'
+import type { Context, FeiyunMiddleware } from 'feiyun'
 const PATH_METADATA = 'path';
 const METHOD_METADATA = 'method';
 const PARAM_METADATA = 'param';
@@ -142,6 +142,38 @@ export class ResponseError extends Error {
     }
 }
 
+const runHandler = async (handler: any, ctx: Context) => {
+    if (handler.validate) {
+        const errors = await validate(plainToInstance(handler.validate, ctx.request.data));
+        if (errors.length > 0) {
+            console.error(errors);
+            ctx.response.data = {
+                code: 500,
+                msg: Object.values(errors[0].constraints)[0]
+            }
+        }
+        return;
+    }
+
+    try {
+        const res = await handler.method(ctx.request.data, ctx.socket);
+        if (res) {
+            ctx.response.data = {
+                data: res
+            };
+        }
+    } catch (e) {
+        if (e instanceof ResponseError) {
+            ctx.response.data = {
+                code: e.code,
+                msg: e.message
+            }
+        } else {
+            console.error(e);
+        }
+    }
+}
+
 /**
  * 自动导入应用文件
  * @param baseDir 应用文件夹
@@ -169,35 +201,7 @@ export const include = async (baseDir: string, rule = '**/*.handler.ts'): Promis
     return async (ctx, next) => {
         const handler = mapRoute.get(ctx.request.url);
         if (handler) {
-
-            if (handler.validate) {
-                const errors = await validate(plainToInstance(handler.validate, ctx.request.data));
-                if (errors.length > 0) {
-                    console.error(errors);
-                    ctx.response.data = {
-                        code: 500,
-                        msg: Object.values(errors[0].constraints)[0]
-                    }
-                }
-            }
-
-            try {
-                const res = await handler.method(ctx.request.data, ctx.socket);
-                if (res) {
-                    ctx.response.data = {
-                        data: res
-                    };
-                }
-            } catch (e) {
-                if (e instanceof ResponseError) {
-                    ctx.response.data = {
-                        code: e.code,
-                        msg: e.message
-                    }
-                } else {
-                    console.error(e);
-                }
-            }
+            await runHandler(handler, ctx);
         }
         next();
     };
