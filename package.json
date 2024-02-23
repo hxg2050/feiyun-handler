@@ -1,11 +1,11 @@
 {
   "name": "feiyun-handler",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "types": "./types/src/index.d.ts",
   "files": [
     "dist",
     "class-validator/dist",
@@ -36,7 +36,6 @@
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/node": "^20.11.19",
-    "glob": "^10.3.10",
     "reflect-metadata": "^0.2.1",
     "rollup": "^4.12.0",
     "rollup-plugin-ts": "^3.4.5",
@@ -45,6 +44,7 @@
     "unbuild": "^2.0.0"
   },
   "dependencies": {
+    "glob": "^10.3.10",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0"
   }
