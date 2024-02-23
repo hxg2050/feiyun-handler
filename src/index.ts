@@ -1,6 +1,8 @@
 import "reflect-metadata";
 import { glob } from "glob";
 import path from "node:path";
+import { plainToInstance } from "class-transformer";
+import { validate } from "class-validator";
 
 const PATH_METADATA = 'path';
 const METHOD_METADATA = 'method';
@@ -130,6 +132,12 @@ export const useMapRoute = (handlers: any[]) => {
     return all;
 }
 
+export class ResponseError extends Error {
+    constructor(msg: string, public code = 500) {
+        super(msg);
+    }
+}
+
 export const include = async (baseDir: string, rule = '**/*.handler.ts') => {
     // const dirs = await readdir(path);
     // const files = await findUp(path + '/' + rule);
@@ -151,9 +159,36 @@ export const include = async (baseDir: string, rule = '**/*.handler.ts') => {
     return async (ctx: any, next: any) => {
         const handler = mapRoute.get(ctx.request.url);
         if (handler) {
-            const res = await handler.method(ctx.request.data, ctx.socket);
-            if (res) {
-                ctx.response.data = res;
+
+            let dto = ctx.msg;
+            if (handler.validate) {
+                dto = plainToInstance(handler.validate, dto);
+                const errors = await validate(dto);
+                if (errors.length > 0) {
+                    console.error(errors);
+                    ctx.response.data = {
+                        code: 500,
+                        msg: Object.values(errors[0].constraints)[0]
+                    }
+                }
+            }
+
+            try {
+                const res = await handler.method(ctx.request.data, ctx.socket);
+                if (res) {
+                    ctx.response.data = {
+                        data: res
+                    };
+                }
+            } catch (e) {
+                if (e instanceof ResponseError) {
+                    ctx.response.data = {
+                        code: e.code,
+                        msg: e.message
+                    }
+                } else {
+                    console.error(e);
+                }
             }
         }
         next();
