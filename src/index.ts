@@ -4,6 +4,7 @@ import path from "node:path";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 
+import { FeiyunMiddleware } from 'feiyun'
 const PATH_METADATA = 'path';
 const METHOD_METADATA = 'method';
 const PARAM_METADATA = 'param';
@@ -138,7 +139,7 @@ export class ResponseError extends Error {
     }
 }
 
-export const include = async (baseDir: string, rule = '**/*.handler.ts') => {
+export const include = async (baseDir: string, rule = '**/*.handler.ts'): FeiyunMiddleware => {
     // const dirs = await readdir(path);
     // const files = await findUp(path + '/' + rule);
     // console.log(files);
@@ -156,12 +157,12 @@ export const include = async (baseDir: string, rule = '**/*.handler.ts') => {
 
     const mapRoute = useMapRoute(handlers);
 
-    return async (ctx: any, next: any) => {
+    return async (ctx, next) => {
         const handler = mapRoute.get(ctx.request.url);
         if (handler) {
 
             if (handler.validate) {
-                const errors = await validate(plainToInstance(handler.validate, ctx.msg));
+                const errors = await validate(plainToInstance(handler.validate, ctx.request.data));
                 if (errors.length > 0) {
                     console.error(errors);
                     ctx.response.data = {
