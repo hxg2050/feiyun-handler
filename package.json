@@ -22,13 +22,13 @@
     },
     "./class-validator": {
       "types": "./types/class-validator/index.d.ts",
-      "import": "./dist/class-validator/index.mjs",
-      "require": "./dist/class-validator/index.cjs"
+      "import": "./class-validator/dist/index.mjs",
+      "require": "./class-validator/dist/index.cjs"
     },
     "./class-transformer": {
       "types": "./types/class-transformer/index.d.ts",
-      "import": "./dist/class-transformer/index.mjs",
-      "require": "./dist/class-transformer/index.cjs"
+      "import": "./class-transformer/dist/index.mjs",
+      "require": "./class-transformer/dist/index.cjs"
     }
   },
   "scripts": {
