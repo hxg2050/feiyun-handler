@@ -139,7 +139,7 @@ export class ResponseError extends Error {
     }
 }
 
-export const include = async (baseDir: string, rule = '**/*.handler.ts'): FeiyunMiddleware => {
+export const include = async (baseDir: string, rule = '**/*.handler.ts'): Promise<FeiyunMiddleware> => {
     // const dirs = await readdir(path);
     // const files = await findUp(path + '/' + rule);
     // console.log(files);
