@@ -160,10 +160,8 @@ export const include = async (baseDir: string, rule = '**/*.handler.ts') => {
         const handler = mapRoute.get(ctx.request.url);
         if (handler) {
 
-            let dto = ctx.msg;
             if (handler.validate) {
-                dto = plainToInstance(handler.validate, dto);
-                const errors = await validate(dto);
+                const errors = await validate(plainToInstance(handler.validate, ctx.msg));
                 if (errors.length > 0) {
                     console.error(errors);
                     ctx.response.data = {
