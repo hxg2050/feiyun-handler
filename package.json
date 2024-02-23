@@ -1,6 +1,6 @@
 {
   "name": "feiyun-handler",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -39,8 +39,7 @@
     "rollup": "^4.12.0",
     "rollup-plugin-ts": "^3.4.5",
     "tslib": "^2.6.2",
-    "typescript": "^5.3.3",
-    "unbuild": "^2.0.0"
+    "typescript": "^5.3.3"
   },
   "dependencies": {
     "reflect-metadata": "^0.2.1",
