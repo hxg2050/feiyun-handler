@@ -4,7 +4,7 @@ import path from "node:path";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 
-import { FeiyunMiddleware } from 'feiyun'
+import type { FeiyunMiddleware } from 'feiyun'
 const PATH_METADATA = 'path';
 const METHOD_METADATA = 'method';
 const PARAM_METADATA = 'param';
@@ -133,12 +133,21 @@ export const useMapRoute = (handlers: any[]) => {
     return all;
 }
 
+/**
+ * 异常抛出基类
+ */
 export class ResponseError extends Error {
     constructor(msg: string, public code = 500) {
         super(msg);
     }
 }
 
+/**
+ * 自动导入应用文件
+ * @param baseDir 应用文件夹
+ * @param rule 导入路径规则
+ * @returns 
+ */
 export const include = async (baseDir: string, rule = '**/*.handler.ts'): Promise<FeiyunMiddleware> => {
     // const dirs = await readdir(path);
     // const files = await findUp(path + '/' + rule);
