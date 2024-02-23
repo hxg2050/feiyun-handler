@@ -1,6 +1,6 @@
 {
   "name": "feiyun-handler",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -8,8 +8,9 @@
   "types": "./dist/index.d.ts",
   "files": [
     "dist",
-    "class-validator",
-    "class-transformer"
+    "class-validator/dist",
+    "class-transformer/dist",
+    "types"
   ],
   "exports": {
     ".": {
